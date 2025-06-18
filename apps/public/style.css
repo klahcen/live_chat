@@ -95,7 +95,7 @@ body {
     margin-top: 4px;
 }
 
-.feedback {
+.feedback{
     font-style: italic;
     font-size: 14px;
     padding: 0px 16px 16px 16px;
@@ -134,7 +134,7 @@ body {
     background-color: #f6f6f6;
 }
 
-.clinet-total{
+.client-total{
     margin: 20px 0;
     color: #7e7e7e;
 }

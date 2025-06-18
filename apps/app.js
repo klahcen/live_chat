@@ -7,22 +7,29 @@ const server = app.listen(PORT, () => console.log(`server opn ${PORT}`))
 
 
 
-const io= require('socket.io')(server)
+const io = require('socket.io')(server)
 
 app.use(express.static(path.join(__dirname, 'public')))
 
 
 let socketsConnected = new Set()
 
-io.on('connection',onConnected)
+io.on('connection', onConnected)
 
-function onConnected(socket){
+function onConnected(socket) {
     console.log('Socket Connected', socket.id)
     socketsConnected.add(socket.id)
-    io.emit('clinet-total',socketsConnected.size);
-    socket.on('disconnet',()=>{
+    io.emit('client-total', socketsConnected.size);
+    socket.on('disconnect', () => {
         console.log('Socket disconnected', socket.id)
         socketsConnected.delete(socket.id)
-        io.emit('clinet-total',socketsConnected.size);
+        io.emit('client-total', socketsConnected.size);
+    })
+    socket.on('message', (data) => {
+        // console.log(data)
+        socket.broadcast.emit('chat-message', data)
+    })
+    socket.on('feedback', (data) => {
+        socket.broadcast.emit('feedback', data)
     })
 }
