@@ -1,94 +1,157 @@
-const socket = io()
+const socket = io();
 
-const clientsTotal = document.getElementById('clients-total')
+const clientsTotal = document.getElementById('clients-total');
+const messageContainer = document.getElementById('message-container');
+const messageForm = document.getElementById('message-form');
+const messageInput = document.getElementById('message-input');
+const messageTone = new Audio('/message-tone.mp3');
 
-const messageContainer = document.getElementById('message-container')
-const nameInput = document.getElementById('name-input')
-const messageFrom = document.getElementById('message-form')
-const messageInput = document.getElementById('message-input')
+let username = prompt("Enter your name:")?.trim() || "Anonymous";
+socket.emit("user-joined", username);
 
-const maessgeTone = new Audio('/message-tone.mp3')
+let clientUserMap = {}; 
+let receiverSocketId = null;
 
-messageFrom.addEventListener('submit',(e)=>{
-    e.preventDefault()
-    sendMessage()
-})
+socket.on('client-total', (count) => {
+  clientsTotal.innerText = `Total Clients: ${count}`;
+});
 
-socket.on('client-total',(data)=>{
-    clientsTotal.innerText = `Total Client: ${data}`
-})
+socket.on('user-list', (userMap) => {
+  clientUserMap = userMap;
+  const userListContainer = document.getElementById('user-list');
+  userListContainer.innerHTML = '';
 
-function sendMessage()
-{
-    if(messageInput.value==='')return
-    // console.log(messageInput.value)
-    const data ={
-        name: nameInput.value,
-        message: messageInput.value,
-        dataTime: new Date()
+  Object.entries(userMap).forEach(([socketId, name]) => {
+    if (name === username) return; 
+
+    const button = document.createElement('button');
+    button.textContent = name;
+    button.className = 'user-button';
+    button.addEventListener('click', () => {
+      receiverSocketId = socketId;
+      addUser(userMap[receiverSocketId]);
+    });
+    userListContainer.appendChild(button);
+  });
+});
+
+function addUser(username) {
+  const userHTML = `
+        <div class="name">
+            <span>
+                <i class="far fa-user"></i>
+            </span>
+            <input type="text" id="name-input" class="name-input" value="${username}" maxlength="20">
+        </div>
+    `;
+  messageContainer.innerHTML += userHTML;
+  const nameInput = document.getElementById('name-input');
+  nameInput.addEventListener('change', () => {
+    const newName = nameInput.value.trim();
+    if (newName) {
+      username = newName;
+      socket.emit('user-joined', username);
     }
-    socket.emit('message',data)
-    addMessageToUI(true, data)
-    messageInput.value = ''
+  });
+}
+
+
+messageForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  sendMessage();
+});
+
+function sendMessage() {
+  const messageText = messageInput.value.trim();
+  if (messageText === '') return;
+  if(receiverSocketId === null)
+  {
+    alert(`select user`);
+    return;  
+  }
+  if (receiverSocketId) {
+    socket.emit('private-message', {
+      to: receiverSocketId,
+      from: username,
+      message: messageText
+    });
+    addMessageToUI(true, {
+      name: `To ${clientUserMap[receiverSocketId]}`,
+      message: messageText,
+      dateTime: new Date()
+    });
+  } else {
+    socket.emit('message', {
+      name: username,
+      message: messageText,
+      dateTime: new Date()
+    });
+    addMessageToUI(true, {
+      name: username,
+      message: messageText,
+      dateTime: new Date()
+    });
+  }
+  messageInput.value = '';
 }
 
 socket.on('chat-message', (data) => {
-    // console.log(data)
-    maessgeTone.play()
-    addMessageToUI(false,data)
-})
+  messageTone.play();
+  addMessageToUI(false, data);
+});
 
-function addMessageToUI(isownMessage, data)
-{
-    clearFeedback()
-    const element = `
-         <li class="${isownMessage ? 'message-right' :  'message-left'}">
-                <p class="message">
-                    ${data.message}
-                    <span>
-                        ${data.name} ${moment(data.dataTime).fromNow()}
-                    </span>
-                </p>
-            </li>
-       `
-    messageContainer.innerHTML += element
-    scrollToBottom()
+socket.on('private-message', (data) => {
+  messageTone.play();
+  addMessageToUI(false, {
+    name: `From ${data.from}`,
+    message: data.message,
+    dateTime: data.dateTime
+  });
+});
+
+function addMessageToUI(isOwnMessage, data) {
+  clearFeedback();
+  const messageHTML = `
+    <li class="${isOwnMessage ? 'message-right' : 'message-left'}">
+      <p class="message">
+        ${data.message}
+        <span>${data.name} • ${moment(data.dateTime).fromNow()}</span>
+      </p>
+    </li>
+  `;
+  messageContainer.innerHTML += messageHTML;
+  scrollToBottom();
 }
 
-
-function scrollToBottom(){
-    messageContainer.scrollTo(0, messageContainer.scrollHeight)
+function scrollToBottom() {
+  messageContainer.scrollTo({
+    top: messageContainer.scrollHeight,
+    behavior: 'smooth'
+  });
 }
 
-messageInput.addEventListener('focus', (e) => {
+function sendTypingFeedback() {
   socket.emit('feedback', {
-    feedback: `✍️ ${nameInput.value} is typing a message`,
-  })
-})
+    feedback: `✍️ ${username} is typing a message...`
+  });
+}
 
-messageInput.addEventListener('keypress', (e) => {
-  socket.emit('feedback', {
-    feedback: `✍️ ${nameInput.value} is typing a message`,
-  })
-})
-messageInput.addEventListener('blur', (e) => {
-  socket.emit('feedback', {
-    feedback: '',
-  })
-})
+messageInput.addEventListener('focus', sendTypingFeedback);
+messageInput.addEventListener('keypress', sendTypingFeedback);
+messageInput.addEventListener('blur', () => {
+  socket.emit('feedback', { feedback: '' });
+});
 
 socket.on('feedback', (data) => {
-  clearFeedback()
-  const element = `
-        <li class="message-feedback">
-          <p class="feedback" id="feedback">${data.feedback}</p>
-        </li>
-  `
-  messageContainer.innerHTML += element
-})
+  clearFeedback();
+  const feedbackHTML = `
+    <li class="message-feedback">
+      <p class="feedback" id="feedback">${data.feedback}</p>
+    </li>
+  `;
+  messageContainer.innerHTML += feedbackHTML;
+});
 
 function clearFeedback() {
-  document.querySelectorAll('li.message-feedback').forEach((element) => {
-    element.parentNode.removeChild(element)
-  })
-}
+  document.querySelectorAll('li.message-feedback').forEach((el) => el.remove());
+} 

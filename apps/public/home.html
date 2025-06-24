@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="style.css" />
+  <title>Chat App</title>
+</head>
+
+<body>
+  <div class="main">
+    <!-- Online Users Section -->
+    <div id="users-box">
+      <h3>Online Users</h3>
+      <div id="user-list" class="user-list-buttons"></div>
+    </div>
+
+    <!-- Username input (optional dynamic name update) -->
+    <div id="username-box" style="margin-top: 20px;"></div>
+
+    <!-- Chat Section -->
+    <div class="chat-container">
+      <h3 class="client-total" id="clients-total">Total Clients: 1</h3>
+
+      <!-- Messages -->
+      <ul id="message-container" class="message-container"></ul>
+
+      <!-- Form to send message -->
+      <form id="message-form">
+        <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off" />
+        <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.28.0/moment.min.js"
+    integrity="sha512-Q1f3TS3vSt1jQ8AwP2OuenztnLU6LwxgyyYOG1jgMW/cbEMHps/3wjvnl1P3WTrF3chJUWEoxDUEjMxDV8pujg=="
+    crossorigin="anonymous"></script>
+  <script src="main.js"></script>
+</body>
+</html>

@@ -138,3 +138,26 @@ body {
     margin: 20px 0;
     color: #7e7e7e;
 }
+
+.user-list-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.user-button {
+    background-color: #2e2e2e;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: left;
+    font-size: 14px;
+}
+
+.user-button:hover {
+    background-color: #444;
+}
