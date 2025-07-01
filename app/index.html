@@ -1,15 +1,27 @@
-<html>
-    <header>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <script src="https://cdn.socket.io/socket.io-3.0.0.js"></script>
-        <script defer src="file.js"></script>
-    </header>
-    <body>
-        <ul id="userList"><!-- user list here --></ul>
-        <ul id="messages"><!-- messages appear here --></ul>
-        <input id="msgInput" placeholder="Message">
-        <button id="sendBtn">Send</button>        
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="
+            const element = document.querySelector('.ali');
+            if(element.innerText === 'hello')
+            {
+                let i = 0;
+                element.innerHTML = `hello ${++i}`;
+            }
+            else
+            {
+                element.innerHTML =`hello ${++i}`;
+            }
+        " class="ali">hello</button>
+    <button id="2">hello1</button>
+    <button id="3">hello2</button>
+    <!-- <script>
+        // console.log(document.querySelector('.ali').innerHTML);
+    </script> -->
+</body>
 </html>

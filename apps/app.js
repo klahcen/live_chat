@@ -4,7 +4,7 @@ const fastifyStatic = require('@fastify/static');
 const { Server } = require('socket.io');
 
 const fastify = Fastify();
-const PORT = process.env.PORT || 4000;
+const PORT = 4000;
 
 fastify.register(fastifyStatic, {
   root: path.join(__dirname, 'public'),

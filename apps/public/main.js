@@ -44,7 +44,12 @@ function addUser(username) {
             <input type="text" id="name-input" class="name-input" value="${username}" maxlength="20">
         </div>
     `;
+
+  const oldNameBox = document.querySelector('.name');
+  if (oldNameBox) oldNameBox.remove();
+
   messageContainer.innerHTML += userHTML;
+
   const nameInput = document.getElementById('name-input');
   nameInput.addEventListener('change', () => {
     const newName = nameInput.value.trim();
@@ -54,6 +59,7 @@ function addUser(username) {
     }
   });
 }
+
 
 
 messageForm.addEventListener('submit', (e) => {

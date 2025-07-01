@@ -9,8 +9,8 @@
 
 body {
     font-family: 'Open Sans', sans-serif;
-    /* display: flex;
-  flex-direction: column;
+     display: flex;
+  /*flex-direction: column;
   justify-content: center;
   align-items: center; */
     display: grid;
@@ -36,6 +36,35 @@ body {
     color: #7e7e7e;
     background-color: #ebebee;
 }
+#users-box {
+  width: 200px;
+  background-color: #ebebee;
+  padding: 16px;
+  border: 2px solid #ccc;
+  border-radius: 16px;
+  height: fit-content;
+}
+
+#user-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#user-list li {
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+  font-size: 16px;
+  color: #333;
+}
+
+
+.chat-container {
+  display: flex;
+  gap: 20px; /* space between users-box and main */
+  align-items: flex-start; /* align tops */
+}
+
 
 .name>span {
     color: #bbb;
