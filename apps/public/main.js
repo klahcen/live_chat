@@ -29,6 +29,7 @@ socket.on('user-list', (userMap) => {
     button.className = 'user-button';
     button.addEventListener('click', () => {
       receiverSocketId = socketId;
+       messageContainer.innerHTML =''
       addUser(userMap[receiverSocketId]);
     });
     userListContainer.appendChild(button);

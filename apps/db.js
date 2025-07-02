@@ -1,10 +1,10 @@
 // db.js
 const Database = require('better-sqlite3');
 
-// Create or open the database file
+// Open or create the SQLite database file named "chat.db"
 const db = new Database('chat.db');
 
-// Create a table if it doesn't exist
+// Create "messages" table if it doesn't exist
 db.prepare(`
   CREATE TABLE IF NOT EXISTS messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
